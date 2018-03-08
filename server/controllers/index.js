@@ -3,15 +3,23 @@ const models = require('../models');
 
 // get the Cat model
 const Cat = models.Cat.CatModel;
+const Dog = models.Dog.DogModel;
 
 // default fake data so that we have something to work with until we make a real Cat
-const defaultData = {
+const defaultCat = {
   name: 'unknown',
   bedsOwned: 0,
 };
 
+const defaultDog = {
+  name: 'unknown',
+  breed: 'mutt',
+  age: 0,
+};
+
 // object for us to keep track of the last Cat we made and dynamically update it sometimes
-let lastAdded = new Cat(defaultData);
+let lastAddedCat = new Cat(defaultData);
+let lastAddedDog = new Cat(defaultData);
 
 // function to handle requests to the main page
 // controller functions in Express receive the full HTTP request
@@ -24,7 +32,7 @@ const hostIndex = (req, res) => {
   // actually calls index.jade. A second parameter of JSON can be passed
   // into the jade to be used as variables with #{varName}
   res.render('index', {
-    currentName: lastAdded.name,
+    currentName: lastAddedCat.name,
     title: 'Home',
     pageName: 'Home Page',
   });
@@ -46,7 +54,7 @@ const readAllCats = (req, res, callback) => {
 
 // function to find a specific cat on request.
 // Express functions always receive the request and the response.
-const readCat = (req, res) => {
+const readCat = (req, res, animal) => {
   const name1 = req.query.name;
 
   // function to call when we get objects back from the database.
@@ -65,7 +73,13 @@ const readCat = (req, res) => {
   // This is a custom static function added to the CatModel
   // Behind the scenes this runs the findOne method.
   // You can find the findByName function in the model file.
-  Cat.findByName(name1, callback);
+    
+  if (animal == "cat") {
+      Cat.findByName(name1, callback);
+  } else if (animal == "dog") {
+      Dog.findByName(name1, callback);
+  }
+  
 };
 
 // function to handle requests to the page1 page
@@ -119,7 +133,7 @@ const getName = (req, res) => {
   // res.json returns json to the page.
   // Since this sends back the data through HTTP
   // you can't send any more data to this user until the next response
-  res.json({ name: lastAdded.name });
+  res.json({ name: lastAddedCat.name });
 };
 
 // function to handle a request to set the name
@@ -155,9 +169,9 @@ const setName = (req, res) => {
   savePromise.then(() => {
     // set the lastAdded cat to our newest cat object.
     // This way we can update it dynamically
-    lastAdded = newCat;
+    lastAddedCat = newCat;
     // return success
-    res.json({ name: lastAdded.name, beds: lastAdded.bedsOwned });
+    res.json({ name: lastAddedCat.name, beds: lastAddedCat.bedsOwned });
   });
 
   // if error, return it
@@ -218,15 +232,15 @@ const updateLast = (req, res) => {
   // You can treat objects just like that - objects.
   // Normally you'd find a specific object, but we will only
   // give the user the ability to update our last object
-  lastAdded.bedsOwned++;
+  lastAddedCat.bedsOwned++;
 
   // once you change all the object properties you want,
   // then just call the Model object's save function
   // create a new save promise for the database
-  const savePromise = lastAdded.save();
+  const savePromise = lastAddedCat.save();
 
   // send back the name as a success for now
-  savePromise.then(() => res.json({ name: lastAdded.name, beds: lastAdded.bedsOwned }));
+  savePromise.then(() => res.json({ name: lastAddedCat.name, beds: lastAddedCat.bedsOwned }));
 
   // if save error, just return an error for now
   savePromise.catch((err) => res.json({ err }));
