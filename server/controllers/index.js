@@ -48,9 +48,9 @@ const readAllAnimals = (req, res, callback, animal) => {
   // two parameters is JSON of search criteria and callback.
   // That limits your search to only things that match the criteria
   // The find function returns an array of matching objects
-    if (animal == "cat") {
+    if (animal === "cat") {
       Cat.find(callback);
-  } else if (animal == "dog") {
+  } else if (animal === "dog") {
       Dog.find(callback);
   }
   
@@ -79,9 +79,9 @@ const readAnimal = (req, res, animal) => {
   // Behind the scenes this runs the findOne method.
   // You can find the findByName function in the model file.
     
-  if (animal == "cat") {
+  if (animal === "cat") {
       Cat.findByName(name1, callback);
-  } else if (animal == "dog") {
+  } else if (animal === "dog") {
       Dog.findByName(name1, callback);
   }
   
@@ -311,7 +311,7 @@ const searchDogName = (req, res) => {
       const savePromise = lastAddedDog.save();
 
       // if save error, just return an error for now
-      savePromise.catch((err) => res.json({ err }));
+      savePromise.catch((err2) => res.json({ err2 }));
           
       // send back the name as a success for now
       return savePromise.then(() => res.json({ name: lastAddedDog.name, breed: lastAddedDog.breed, age: lastAddedDog.age }));
