@@ -36,7 +36,7 @@ DogSchema.statics.sayName = (dog) => {
   console.log(dog.name);
 };
 
-CatSchema.statics.findByName = (name, callback) => {
+DogSchema.statics.findByName = (name, callback) => {
   const search = {
     name,
   };
